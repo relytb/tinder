@@ -2,8 +2,9 @@ import sys
 import dlib
 import os
 import cv2
+from django.conf import settings
 
-predictor_path = "shape_predictor_68_face_landmarks.dat"
+predictor_path = os.path.join(settings.BASE_DIR, "app", "shape_predictor_68_face_landmarks.dat")
 detector = dlib.get_frontal_face_detector()
 sp = dlib.shape_predictor(predictor_path)
 
@@ -26,9 +27,8 @@ def pre_process_image(image_path, new_image_path):
         gray = cv2.cvtColor(face_chip, cv2.COLOR_BGR2GRAY)
 
         # write to file
-        processed_image_path = os.path.join(extracted_dir, new_image_path)
         print("Writing for {}".format(image_path))
-        cv2.imwrite(processed_image_path, gray)
+        cv2.imwrite(new_image_path, gray)
     else:
         print("Failed to extract face for {}".format(image_path))
 
