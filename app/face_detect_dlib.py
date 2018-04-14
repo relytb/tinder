@@ -1,45 +1,49 @@
 import sys
 import dlib
-from skimage import io
 import os
 import cv2
 
+predictor_path = "shape_predictor_68_face_landmarks.dat"
+detector = dlib.get_frontal_face_detector()
+sp = dlib.shape_predictor(predictor_path)
+
+def pre_process_image(image_path, new_image_path):
+    # Open image
+    cv2_image = cv2.imread(image_path)
+    cv2_image_rgb = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
+
+    # Detect faces
+    detected_faces = detector(cv2_image_rgb, 1)
+
+    if len(detected_faces) > 0:
+        # Align face http://dlib.net/face_alignment.py.html
+        full_object_detections = dlib.full_object_detections()
+        for detected_face in detected_faces:
+            full_object_detections.append(sp(cv2_image_rgb, detected_face))
+        face_chip = dlib.get_face_chip(cv2_image_rgb, full_object_detections[0])
+
+        # grayscale
+        gray = cv2.cvtColor(face_chip, cv2.COLOR_BGR2GRAY)
+
+        # write to file
+        processed_image_path = os.path.join(extracted_dir, new_image_path)
+        print("Writing for {}".format(image_path))
+        cv2.imwrite(processed_image_path, gray)
+    else:
+        print("Failed to extract face for {}".format(image_path))
+
+
 if __name__ == '__main__':
     
-    predictor_path = "shape_predictor_68_face_landmarks.dat"
-    face_detector = dlib.get_frontal_face_detector()
-    sp = dlib.shape_predictor(predictor_path)
-
     extracted_dir = "../extracted"
     if not os.path.exists(extracted_dir):
         os.makedirs(extracted_dir)
     f = 0
     for root_path in ["../like", "../nope"]:
         for path in os.listdir(root_path):
-            imgs = list(filter(lambda s: "jpg" in s, os.listdir(
+            image_names = list(filter(lambda s: "jpg" in s, os.listdir(
                 os.path.join(root_path, path))))
-            for img in imgs:
-                imagePath = os.path.join(root_path, path, img)
-                # Read the image
-                image = io.imread(imagePath)
-                detected_faces = face_detector(image, 1)
-                cv2image = cv2.imread(imagePath)
-                img = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
-                gray = cv2.cvtColor(cv2image, cv2.COLOR_BGR2GRAY)
-                faces = dlib.full_object_detections()
-                for face_rect in detected_faces:
-                    faces.append(sp(img, face_rect))
-                    image = dlib.get_face_chip(img, faces[0])
-                    cv_bgr_img = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
-                    x = face_rect.left()
-                    y = face_rect.top()
-                    w = face_rect.right() - x
-                    h = face_rect.bottom() - y
-                    sub_img=gray[y-10:y+h+10,x-10:x+w+10]
-                    imgpath = os.path.join(extracted_dir, str(f) + ".jpg")
-                    f += 1
-                    print("Writing {}".format(imgpath))
-                    cv2.imwrite(imgpath, cv_bgr_img)
-                    if cv2.imread(imgpath) is None:
-                        os.remove(imgpath)
+            for image_name in image_names:
+                image_path = os.path.join(root_path, path, image_name)
+                pre_process_image(image_path, os.path.join(extracted_dir, "{}.jpg".format(f)))
+                f += 1
