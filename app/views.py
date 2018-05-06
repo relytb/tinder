@@ -3,13 +3,11 @@ import os
 import base64
 import urllib.request
 import threading
-from . import image_utils
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.conf import settings
 
-PROFILE_NUMS = {'like': 0, 'nope': 0}
 LIKE_DIR = "like"
 NOPE_DIR = "nope"
 
@@ -30,42 +28,31 @@ def _init_folders():
     like_path = os.path.join(settings.BASE_DIR, LIKE_DIR)
     if not os.path.exists(nope_path):
         os.makedirs(nope_path)
-    elif PROFILE_NUMS[NOPE_DIR] == 0:
-        # initialize this
-        profile_folders = os.listdir(nope_path)
-        PROFILE_NUMS[NOPE_DIR] = len(profile_folders)
         
     if not os.path.exists(like_path):
         os.makedirs(like_path)
-    elif PROFILE_NUMS[LIKE_DIR] == 0:
-        profile_folders = os.listdir(like_path)
-        PROFILE_NUMS[LIKE_DIR] = len(profile_folders)
 
-def _save_like(profile, dir_num):
+def _save_like(profile):
     print("Saving like for {} ...".format(profile['name']))
-    _save_profile(profile, LIKE_DIR, dir_num)
+    _save_profile(profile, LIKE_DIR)
 
-def _save_nope(profile, dir_num):
+def _save_nope(profile):
     print("Saving nope {} ...".format(profile['name']))
-    _save_profile(profile, NOPE_DIR, dir_num)
+    _save_profile(profile, NOPE_DIR)
 
 def save_profile(profile):
     """ write profile to disk """
     write_call = None
     if profile['like'] == 0:
-        write_call = lambda : _save_nope(profile, PROFILE_NUMS[NOPE_DIR])
-        PROFILE_NUMS[NOPE_DIR] += 1
+        write_call = lambda : _save_nope(profile)
     else:
-        write_call = lambda : _save_like(profile, PROFILE_NUMS[LIKE_DIR])
-        PROFILE_NUMS[LIKE_DIR] += 1
+        write_call = lambda : _save_like(profile)
     
     threading.Thread(target=write_call).start()
 
-def _save_profile(profile, swipe_dirname, dir_num):
-    profile_foldername = "profile_{}".format(dir_num)
-    profile_folder_path = os.path.join(settings.BASE_DIR, swipe_dirname, profile_foldername)
-    os.makedirs(profile_folder_path)
-    json_path = os.path.join(profile_folder_path, "profile.json")
+def _save_profile(profile, swipe_dirname):
+    profile_folder_path = os.path.join(settings.BASE_DIR, swipe_dirname)
+    json_path = os.path.join(profile_folder_path, "{}_profile.json".format(profile["_id"]))
     with open(json_path, 'w') as profile_file:
         profile_file.write(json.dumps(profile))
 
@@ -73,11 +60,9 @@ def _save_profile(profile, swipe_dirname, dir_num):
     for img_dict in profile['photos']:
         img_url = img_dict['url']
         print(img_url)
-        img_path = os.path.join(profile_folder_path, "original_{}.jpg".format(pic_num))
+        img_path = os.path.join(profile_folder_path, "{}_{}.jpg".format(profile["_id"], pic_num))
         try:
             urllib.request.urlretrieve(img_url, img_path)
-            processed_image_path = os.path.join(profile_folder_path, "processed_{}.jpg".format(pic_num))
-            image_utils.pre_process_image(img_path, processed_image_path)
         except urllib.error.HTTPError as err:
             print(err.code)
         pic_num += 1
