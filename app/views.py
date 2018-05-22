@@ -34,11 +34,11 @@ def _init_folders():
 
 def _save_like(profile):
     print("Saving like for {} ...".format(profile['name']))
-    _save_profile(profile, LIKE_DIR)
+    _save_profile(profile, LIKE_DIR, settings.BASE_DIR)
 
 def _save_nope(profile):
     print("Saving nope {} ...".format(profile['name']))
-    _save_profile(profile, NOPE_DIR)
+    _save_profile(profile, NOPE_DIR, settings.BASE_DIR)
 
 def save_profile(profile):
     """ write profile to disk """
@@ -50,8 +50,8 @@ def save_profile(profile):
     
     threading.Thread(target=write_call).start()
 
-def _save_profile(profile, swipe_dirname):
-    profile_folder_path = os.path.join(settings.BASE_DIR, swipe_dirname)
+def _save_profile(profile, swipe_dirname, baseDir):
+    profile_folder_path = os.path.join(baseDir, swipe_dirname)
     json_path = os.path.join(profile_folder_path, "{}_profile.json".format(profile["_id"]))
     with open(json_path, 'w') as profile_file:
         profile_file.write(json.dumps(profile))

@@ -68,8 +68,8 @@ def run(img_dir):
 if __name__ == '__main__':
     
     # Test
-    print("Pre-processing nopes")
-    run("../nope")
     print("Pre-processing likes")
     run("../like")
+    print("Pre-processing nopes")
+    run("../nope")
     
