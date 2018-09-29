@@ -3,6 +3,7 @@ db.sqlite3
 tinder/__pycache__/*
 like/*
 nope/*
+burned/*
 extracted
 nope_swipe/*
 like_swipe/*

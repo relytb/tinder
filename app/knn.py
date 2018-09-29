@@ -3,18 +3,28 @@ import os
 import math
 from random import shuffle
 from collections import OrderedDict
+from image_utils import run
 
 LIKES = {}
 NOPES = {}
 
 
 def setupDicts():
-    LIKES = load("../like")
+    run('../like')
+    run('../nope')
+    likes = load("../like")
+    likes_keys = list(likes.keys())
+    shuffle(likes_keys)
+    for k in likes_keys:
+        LIKES[k] = likes[k]
+
+
     nopes = load("../nope")
     nopes_keys = list(nopes.keys())
     shuffle(nopes_keys)
-    for k in nopes_keys[:len(LIKES.keys())]:
+    for k in nopes_keys[:len(likes_keys)]:
         NOPES[k] = nopes[k]
+        
     print('{} likes'.format(len(LIKES)))
     print('{} nopes'.format(len(NOPES)))
 
@@ -44,10 +54,10 @@ def _knn(k, descriptor, likes, nopes):
         if descriptor_path in likes.keys():
             swipe = "like"
             like_count += 1
-        #print("{}th descriptor: {} is a {} with distance {}".format(i, descriptor_path, swipe, distances[descriptor_path]))
-        #print("Check it out here: {}".format(os.path.abspath(os.path.join("../{}".format(swipe), "_".join(descriptor_path.split("_")[:-1]) + ".jpg"))))
+        print("{}th descriptor: {} is a {} with distance {}".format(i, descriptor_path, swipe, distances[descriptor_path]))
+        print("Check it out here: {}".format(os.path.abspath(os.path.join("../{}".format(swipe), "_".join(descriptor_path.split("_")[:-1]) + ".jpg"))))
         i += 1
-
+    print("{} likes out of {}".format(like_count, k))
     return round(like_count/k)   
 
 def euclidean_distance(descriptor1, descriptor2):
