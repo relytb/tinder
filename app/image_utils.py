@@ -57,12 +57,20 @@ def extract_n(image_path):
 def run(img_dir):
     entries = os.listdir(img_dir)
     ids = set([extract_id(entry) for entry in entries])
+    to_process = []
     for id in ids: 
         profile_pics = [entry for entry in entries if ".jpg" in entry and id in entry]
         for pic in profile_pics:
             n = pic.split("_")[1].split(".")[0]
             if not "{}_{}_done".format(id, n) in entries:
-                pre_process_image(os.path.join(os.path.abspath(img_dir), pic), id, n)
+                to_process.append((os.path.join(os.path.abspath(img_dir), pic), id, n))
+
+    total = len(to_process)
+    cur = 0
+    for args in to_process:
+        pre_process_image(args[0], args[1], args[2])
+        cur += 1
+        print('Processed {} of {} pics in {}'.format(cur, total, img_dir))
 
 
 if __name__ == '__main__':

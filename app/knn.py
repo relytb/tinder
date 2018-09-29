@@ -10,8 +10,6 @@ NOPES = {}
 
 
 def setupDicts():
-    run('../like')
-    run('../nope')
     likes = load("../like")
     likes_keys = list(likes.keys())
     shuffle(likes_keys)

@@ -1,4 +1,5 @@
 import requests
+import time
 
 TINDER_URL = 'https://api.gotinder.com'
 RECS_URI = '/v2/recs/core'
@@ -27,7 +28,7 @@ def _getMatchesFromRequest(xauthToken, uri, matches):
 
 def getRecs(xauthToken):
     headers = {'X-Auth-Token': xauthToken}
-    r = requests.get(TINDER_URL + RECS_URL, headers=headers)
+    r = requests.get(TINDER_URL + RECS_URI, headers=headers)
     if r.status_code != 200:
         print("Status: {}, error: {}".format(r.status_code, r.text))
         raise Exception(r.text)
@@ -48,7 +49,7 @@ def spoofLocation(xauthToken, lat, lon):
 def like(xauthToken, profile):
     headers = {'X-Auth-Token': xauthToken}
     print('Swiping right on {}'.format(profile['name']))
-    r = requests.get(TINDER_URL + LIKE_URL.format(profile['_id']), headers=headers)
+    r = requests.get(TINDER_URL + LIKE_URI.format(profile['_id']), headers=headers)
     if r.status_code != 200:
         print("Status: {}, error: {}".format(r.status_code, r.text))
         raise Exception(r.text)
@@ -56,7 +57,7 @@ def like(xauthToken, profile):
 def nope(xauthToken, profile):
     headers = {'X-Auth-Token': xauthToken}
     print('Swiping left on {}'.format(profile['name']))
-    r = requests.get(TINDER_URL + NOPE_URL.format(profile['_id']), headers=headers)
+    r = requests.get(TINDER_URL + NOPE_URI.format(profile['_id']), headers=headers)
     if r.status_code != 200:
         print("Status: {}, error: {}".format(r.status_code, r.text))
         raise Exception(r.text)
