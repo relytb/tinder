@@ -66,11 +66,11 @@ def run(img_dir):
                 to_process.append((os.path.join(os.path.abspath(img_dir), pic), id, n))
 
     total = len(to_process)
-    cur = 0
+    cur = 1
     for args in to_process:
+        print('Processing {} of {} pics in {}'.format(cur, total, img_dir))
         pre_process_image(args[0], args[1], args[2])
         cur += 1
-        print('Processed {} of {} pics in {}'.format(cur, total, img_dir))
 
 
 if __name__ == '__main__':

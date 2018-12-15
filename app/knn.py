@@ -20,7 +20,7 @@ def setupDicts():
     nopes = load("../nope")
     nopes_keys = list(nopes.keys())
     shuffle(nopes_keys)
-    for k in nopes_keys[:len(likes_keys)]:
+    for k in nopes_keys:
         NOPES[k] = nopes[k]
         
     print('{} likes'.format(len(LIKES)))

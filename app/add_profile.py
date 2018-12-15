@@ -7,10 +7,9 @@ from threading import Thread
 import subprocess
 
 if __name__ == '__main__':
-    xauthToken = sys.argv[1]
-    id = sys.argv[3]
-    is_like = sys.argv[2]
-    match = getMatches(xauthToken)[id]
+    id = sys.argv[2]
+    is_like = sys.argv[1]
+    match = getMatches()[id]
     if is_like == '1':
         _save_like(match)
     elif is_like == '0':

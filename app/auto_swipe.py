@@ -12,18 +12,19 @@ K = 5
 TEMP_DIR = 'tmp'
 
 if __name__ == '__main__':
-    count = 0
-    if len(sys.argv) > 2:
+    nope_count = 0
+    like_count = 0
+    if len(sys.argv) > 1:
             def target():
-                spoofLocation(sys.argv[1], sys.argv[2], sys.argv[3])
+                spoofLocation(sys.argv[1], sys.argv[2])
             threading.Thread(target=target).start()
     while True:
         # call update endpoint to load profiles into stack
-        profiles = getRecs(sys.argv[1])
+        profiles = getRecs()
         print('Got profiles')
         # call knn on each profile
         for profile in profiles:
-            print('Saving {}'.format(profile['_id']))
+            print('Saving {} {}'.format(profile['name'], profile['_id']))
             tmp_path = os.path.join(os.getcwd(), os.pardir, TEMP_DIR)
             if os.path.exists(tmp_path):
                 shutil.rmtree(tmp_path)
@@ -42,19 +43,21 @@ if __name__ == '__main__':
             
 
             # Call endpoint to swipe left or right
-            if profile['like'] == 0 and profile['name'] != 'Quinn':
-                nope(sys.argv[1], profile)
+            if profile['like'] == 0:
+                nope_count += 1
+                nope(profile)
                 # print("Saving nope {} ...".format(profile['name']))
                 # for f in os.listdir(os.path.join(os.getcwd(), os.pardir, TEMP_DIR)):
                 #     if not os.path.exists( os.path.join(os.getcwd(), os.pardir, 'nope_swipe', f)):
                 #         shutil.move(os.path.join(os.getcwd(), os.pardir, TEMP_DIR, f), os.path.join(os.getcwd(), os.pardir, 'nope_swipe'))
             else:
-                like(sys.argv[1], profile)
+                like_count += 1
+                like(profile)
                 # print("Saving like for {} ...".format(profile['name']))
                 # for f in os.listdir(os.path.join(os.getcwd(), os.pardir, TEMP_DIR)):
                 #     if not os.path.exists( os.path.join(os.getcwd(), os.pardir, 'like_swipe', f)):
                 #         shutil.move(os.path.join(os.getcwd(), os.pardir, TEMP_DIR, f), os.path.join(os.getcwd(), os.pardir, 'like_swipe'))
-            
             shutil.rmtree(tmp_path)
+            print('Left: {}, Right: {} times'.format(nope_count, like_count))
 
         

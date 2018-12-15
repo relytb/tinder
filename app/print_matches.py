@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 if __name__ == '__main__':
-    matches = getMatches(sys.argv[1])
+    matches = getMatches()
     processed = set(id.split('_')[0] for id in (os.listdir('../like') + os.listdir('../nope') + os.listdir('../burned')))
     i = 0
     for match in matches.values():
