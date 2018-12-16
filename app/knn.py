@@ -26,8 +26,6 @@ def setupDicts():
     print('{} likes'.format(len(LIKES)))
     print('{} nopes'.format(len(NOPES)))
 
-
-
 def knn(k, descriptor):
     return _knn(k, descriptor, LIKES, NOPES)
 

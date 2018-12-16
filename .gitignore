@@ -12,3 +12,4 @@ tmp/*
 fb_config.py
 app/auth_token
 *.pyc
+insta_likes
