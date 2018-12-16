@@ -4,6 +4,7 @@ import fb_config
 import json
 import os
 
+INSTA_URL = "https://www.instagram.com/p/"
 TINDER_URL = 'https://api.gotinder.com'
 RECS_URI = '/v2/recs/core'
 NOPE_URI = '/pass/{}'
@@ -17,6 +18,16 @@ TOKEN_PATH = os.path.join(os.getcwd(), 'auth_token')
 
 headers = {}
 
+def getInstaPost(shortcode):
+    request = requests.get(INSTA_URL + shortcode)
+    html_text = request.text
+    shared_data_index = html_text.index("window._sharedData")
+    html_text = html_text[shared_data_index:]
+    json_blob_start = html_text.index('{')
+    json_blob_end = html_text.index('</script>') - 1
+    json_blob = html_text[json_blob_start:json_blob_end]
+    return json.loads(json_blob)['entry_data']
+
 def _handleHttpError(retry):
     request = retry(headers)
     if request.status_code == 401:
@@ -24,7 +35,6 @@ def _handleHttpError(retry):
         request = retry(headers)
     request.raise_for_status()
     return request
-
 
 def getAuthToken():
     if  os.path.exists(TOKEN_PATH):

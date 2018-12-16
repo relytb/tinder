@@ -3,33 +3,9 @@ import os
 import math
 from random import shuffle
 from collections import OrderedDict
-from image_utils import run
-
-LIKES = {}
-NOPES = {}
 
 
-def setupDicts():
-    likes = load("../like")
-    likes_keys = list(likes.keys())
-    shuffle(likes_keys)
-    for k in likes_keys:
-        LIKES[k] = likes[k]
-
-
-    nopes = load("../nope")
-    nopes_keys = list(nopes.keys())
-    shuffle(nopes_keys)
-    for k in nopes_keys:
-        NOPES[k] = nopes[k]
-        
-    print('{} likes'.format(len(LIKES)))
-    print('{} nopes'.format(len(NOPES)))
-
-def knn(k, descriptor):
-    return _knn(k, descriptor, LIKES, NOPES)
-
-def _knn(k, descriptor, likes, nopes):
+def knn(k, descriptor, likes, nopes):
     distances = {}
     for descriptor_path in nopes.keys():
         distance = euclidean_distance(nopes[descriptor_path], descriptor)
@@ -57,10 +33,10 @@ def _knn(k, descriptor, likes, nopes):
     return round(like_count/k)   
 
 def euclidean_distance(descriptor1, descriptor2):
-    terms = []
+    sum = 0
     for i in range(len(descriptor1)):
-        terms.append((descriptor1[i] - descriptor2[i]) ** 2)
-    return math.sqrt(sum(terms))
+        sum += (descriptor1[i] - descriptor2[i]) ** 2
+    return math.sqrt(sum)
   
 def load(img_dir):
     vectors = {}
@@ -69,8 +45,6 @@ def load(img_dir):
     for descriptor_path in descriptor_paths:
         vectors[descriptor_path] = pickle.load(open(os.path.join(img_dir, descriptor_path), "rb"))
     return vectors
-
-setupDicts()
 
 if __name__ == '__main__':
     likes = load("../like")
@@ -106,7 +80,7 @@ if __name__ == '__main__':
         nope_but_swiped_right = 0
         for i in range(len(test)):
             value = likes[test[i]] if test[i] in likes.keys() else nopes[test[i]]
-            result = _knn(k, value, likes_training_dict, nopes_training_dict)
+            result = knn(k, value, likes_training_dict, nopes_training_dict)
 
             is_nope = test[i] in nopes.keys()
             if (result == 0 and not is_nope):

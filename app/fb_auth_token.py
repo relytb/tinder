@@ -1,7 +1,4 @@
-# Used from  https://github.com/philipperemy/Deep-Learning-Tinder/blob/master/tinder_token.py
-
 import re
-
 import requests
 import robobrowser
 
