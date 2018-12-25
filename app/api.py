@@ -4,7 +4,7 @@ import fb_config
 import json
 import os
 
-INSTA_URL = "https://www.instagram.com/p/"
+INSTA_URL = 'https://www.instagram.com/p/'
 TINDER_URL = 'https://api.gotinder.com'
 RECS_URI = '/v2/recs/core'
 NOPE_URI = '/pass/{}'
@@ -21,7 +21,7 @@ headers = {}
 def getInstaPost(shortcode):
     request = requests.get(INSTA_URL + shortcode)
     html_text = request.text
-    shared_data_index = html_text.index("window._sharedData")
+    shared_data_index = html_text.index('window._sharedData')
     html_text = html_text[shared_data_index:]
     json_blob_start = html_text.index('{')
     json_blob_end = html_text.index('</script>') - 1
@@ -41,21 +41,21 @@ def getAuthToken():
         token_file = open(TOKEN_PATH)
         token = token_file.readlines()[0]
         token_file.close()
-        headers["X-Auth-Token"] = token
+        headers['X-Auth-Token'] = token
         request = requests.get(TINDER_URL + META_URI, headers=headers)
         if request.status_code == 200:
             print('Loaded saved auth token')
             return
 
-    print("No valid saved auth token, getting one manually")
+    print('No valid saved auth token, getting one manually')
     fb_config.init()
     req = requests.post(TINDER_URL + AUTH_URI, json={'facebook_token': fb_config.fb_access_token, 'facebook_id': fb_config.fb_user_id})
-    tinder_auth_token = req.json()["token"]
-    headers["X-Auth-Token"] = tinder_auth_token
+    tinder_auth_token = req.json()['token']
+    headers['X-Auth-Token'] = tinder_auth_token
     token_file = open(TOKEN_PATH, 'w')
     token_file.write(tinder_auth_token)
     token_file.close()
-    print("You have been successfully authorized!")
+    print('You have been successfully authorized!')
 
 def getMatches():
     matches = {}
@@ -82,10 +82,10 @@ def spoofLocation(lat, lon):
     while True:
         print('Updating location to lat: {} lon: {}'.format(lat, lon))
         try:
-            _handleHttpError(lambda x: requests.post(TINDER_URL + LOCATION_URL, json={"lat": lat, "lon": lon}, headers=x))
+            _handleHttpError(lambda x: requests.post(TINDER_URL + LOCATION_URL, json={'lat': lat, 'lon': lon}, headers=x))
         except Exception:
             # swallow
-            print("swallow ping failure")
+            print('swallow ping failure')
         time.sleep(60)
 
 def like(profile):

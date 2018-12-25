@@ -5,7 +5,6 @@ from file_utils import _init_folders, save_profile, _get_profile
 
 
 def save(request):
-    """ save endpoint """
     _init_folders()
     save_profile(_get_profile(request))
-    return HttpResponse("test")
+    return HttpResponse('test')

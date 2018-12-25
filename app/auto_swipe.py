@@ -10,21 +10,20 @@ import shutil
 from file_utils import _save_profile
 from image_utils import run
 from api import getRecs, nope, like, spoofLocation
-K = 5
-TEMP_DIR = 'tmp'
+from constants import NUM_CORES, K, TEMP_DIR, DEBUG_MODE, SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR, SAVED_LIKES_DIR, SAVED_NOPES_DIR
 
 LIKES = {}
 NOPES = {}
 
 def setupDicts():
-    nopes = load("../nope")
+    nopes = load(SAMPLE_NOPES_DIR)
     nopes_keys = list(nopes.keys())
     shuffle(nopes_keys)
     for k in nopes_keys:
         NOPES[k] = nopes[k]
     print('{} nopes'.format(len(NOPES)))
 
-    likes = load("../like")
+    likes = load(SAMPLE_LIKES_DIR)
     likes_keys = list(likes.keys())
     shuffle(likes_keys)
     for k in likes_keys:
@@ -33,7 +32,7 @@ def setupDicts():
 
 if __name__ == '__main__':
     setupDicts()
-    pool = Pool(processes=4)
+    pool = Pool(processes=NUM_CORES)
     nope_count = 0
     like_count = 0
     if len(sys.argv) > 1:
@@ -41,7 +40,6 @@ if __name__ == '__main__':
                 spoofLocation(sys.argv[1], sys.argv[2])
             threading.Thread(target=target).start()
     while True:
-        # call update endpoint to load profiles into stack
         profiles = getRecs()
         if len(profiles) == 0:
             print('No one in your area. Going to sleep for a bit.')
@@ -56,8 +54,6 @@ if __name__ == '__main__':
             if os.path.exists(tmp_path):
                 shutil.rmtree(tmp_path)
             os.mkdir(tmp_path)
-            like_path = os.path.join(os.getcwd(), os.pardir, 'like_swipe')
-            nope_path = os.path.join(os.getcwd(), os.pardir, 'nope_swipe')
             _save_profile(profile, TEMP_DIR, os.path.join(os.getcwd(), os.pardir))
             run(tmp_path, pool)
             profile_descriptors = load(tmp_path)
@@ -70,21 +66,24 @@ if __name__ == '__main__':
             
             profile['like'] = 1 if (len(swipes) > 0 and (sum(swipes)/len(swipes)) >= 0.5) or len(swipes) == 0 else 0
             
-
-            # Call endpoint to swipe left or right (uncomment the code below to store swipes for triaging into data)
             if profile['like'] == 0:
                 nope_count += 1
-                nope(profile)
-                # print("Saving nope {} ...".format(profile['name']))
-                # for f in os.listdir(os.path.join(os.getcwd(), os.pardir, TEMP_DIR)):
-                #     if not os.path.exists( os.path.join(os.getcwd(), os.pardir, 'nope_swipe', f)):
-                #         shutil.move(os.path.join(os.getcwd(), os.pardir, TEMP_DIR, f), os.path.join(os.getcwd(), os.pardir, 'nope_swipe'))
+                if DEBUG_MODE:
+                    print('Saving nope {} ...'.format(profile['name']))
+                    for f in os.listdir(os.path.join(os.getcwd(), os.pardir, TEMP_DIR)):
+                        if not os.path.exists( os.path.join(os.getcwd(), os.pardir, SAVED_NOPES_DIR, f)):
+                            shutil.move(os.path.join(os.getcwd(), os.pardir, TEMP_DIR, f), os.path.join(os.getcwd(), os.pardir, SAVED_NOPES_DIR))
+                else:
+                    nope(profile)
+                
             else:
                 like_count += 1
-                like(profile)
-                # print("Saving like for {} ...".format(profile['name']))
-                # for f in os.listdir(os.path.join(os.getcwd(), os.pardir, TEMP_DIR)):
-                #     if not os.path.exists( os.path.join(os.getcwd(), os.pardir, 'like_swipe', f)):
-                #         shutil.move(os.path.join(os.getcwd(), os.pardir, TEMP_DIR, f), os.path.join(os.getcwd(), os.pardir, 'like_swipe'))
+                if DEBUG_MODE:
+                    print('Saving like for {} ...'.format(profile['name']))
+                    for f in os.listdir(os.path.join(os.getcwd(), os.pardir, TEMP_DIR)):
+                        if not os.path.exists( os.path.join(os.getcwd(), os.pardir, SAVED_LIKES_DIR, f)):
+                            shutil.move(os.path.join(os.getcwd(), os.pardir, TEMP_DIR, f), os.path.join(os.getcwd(), os.pardir, SAVED_LIKES_DIR))
+                else:
+                    like(profile)
             shutil.rmtree(tmp_path)
             print('Left: {}, Right: {} times'.format(nope_count, like_count))

@@ -3,18 +3,17 @@ import os
 import math
 from random import shuffle
 from collections import OrderedDict
+from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR
 
 
 def knn(k, descriptor, likes, nopes):
     distances = {}
     for descriptor_path in nopes.keys():
         distance = euclidean_distance(nopes[descriptor_path], descriptor)
-        #print("Distance {} for nope {}".format(distance, descriptor_path))
         distances[descriptor_path] = distance
     
     for descriptor_path in likes.keys():
         distance = euclidean_distance(likes[descriptor_path], descriptor)
-        #print("Distance {} for like {}".format(distance, descriptor_path))
         distances[descriptor_path] = distance
     
     distances = OrderedDict(sorted(distances.items(), key=lambda t: t[1]))
@@ -22,14 +21,14 @@ def knn(k, descriptor, likes, nopes):
     like_count = 0
     i = 0
     for descriptor_path in list(distances.keys())[:k]:
-        swipe = "nope"
+        swipe = 'nope'
         if descriptor_path in likes.keys():
-            swipe = "like"
+            swipe = 'like'
             like_count += 1
-        print("{}th descriptor: {} is a {} with distance {}".format(i, descriptor_path, swipe, distances[descriptor_path]))
-        print("Check it out here: {}".format(os.path.abspath(os.path.join("../{}".format(swipe), "_".join(descriptor_path.split("_")[:-1]) + ".jpg"))))
+        print('{}th descriptor: {} is a {} with distance {}'.format(i, descriptor_path, swipe, distances[descriptor_path]))
+        print('Check it out here: {}'.format(os.path.abspath(os.path.join('../{}'.format(swipe), '_'.join(descriptor_path.split('_')[:-1]) + '.jpg'))))
         i += 1
-    print("{} likes out of {}".format(like_count, k))
+    print('{} likes out of {}'.format(like_count, k))
     return round(like_count/k)   
 
 def euclidean_distance(descriptor1, descriptor2):
@@ -41,14 +40,14 @@ def euclidean_distance(descriptor1, descriptor2):
 def load(img_dir):
     vectors = {}
     entries = os.listdir(img_dir)
-    descriptor_paths = [entry for entry in entries if "descriptor" in entry]
+    descriptor_paths = [entry for entry in entries if 'descriptor' in entry]
     for descriptor_path in descriptor_paths:
-        vectors[descriptor_path] = pickle.load(open(os.path.join(img_dir, descriptor_path), "rb"))
+        vectors[descriptor_path] = pickle.load(open(os.path.join(img_dir, descriptor_path), 'rb'))
     return vectors
 
 if __name__ == '__main__':
-    likes = load("../like")
-    nopes = load("../nope")
+    likes = load(SAMPLE_LIKES_DIR)
+    nopes = load(SAMPLE_NOPES_DIR)
     print(len(likes))
     print(len(nopes))
     likes_keys = list(likes.keys())
@@ -63,7 +62,7 @@ if __name__ == '__main__':
     nopes_training_keys = nopes_keys[:len(likes_training_keys)]
     nopes_test_keys = nopes_keys[len(likes_training_keys):len(likes_training_keys) + len(likes_test_keys)]
 
-    print("{} in likes train set, {} in likes test set, {} in nopes train set, {} in nopes test set".format(
+    print('{} in likes train set, {} in likes test set, {} in nopes train set, {} in nopes test set'.format(
         len(likes_training_keys), len(likes_test_keys), len(nopes_training_keys), len(nopes_test_keys)))
 
     test = likes_test_keys + nopes_test_keys
@@ -87,7 +86,7 @@ if __name__ == '__main__':
                 like_but_swiped_left += 1
             if (result == 1 and is_nope):
                 nope_but_swiped_right += 1
-            print("                                                                           ", end="\r")
-            print("{} way done for k={}".format(i/len(test), k), end="\r")
-        print("Accuracy: {}%, {}% swiped left on likes, {}% swiped right on nopes for k={}".format(round(((len(test) - like_but_swiped_left - nope_but_swiped_right)/len(test))*100), 
+            print('                                                                           ', end='\r')
+            print('{} way done for k={}'.format(i/len(test), k), end='\r')
+        print('Accuracy: {}%, {}% swiped left on likes, {}% swiped right on nopes for k={}'.format(round(((len(test) - like_but_swiped_left - nope_but_swiped_right)/len(test))*100), 
         (like_but_swiped_left/len(likes_test_keys))*100, (nope_but_swiped_right/len(nopes_test_keys))*100,  k))

@@ -4,6 +4,7 @@ import json
 from file_utils import save_profile
 from image_utils import extract_id
 from api import getInstaPost
+from constants import SAMPLE_LIKES_DIR
 
 
 def downloadProfile(shortcode):
@@ -14,7 +15,7 @@ def downloadProfile(shortcode):
         save_profile(profile)
 
 def getSeen():
-    entries = os.listdir('../like')
+    entries = os.listdir(SAMPLE_LIKES_DIR)
     return set([extract_id(entry) for entry in entries])
 
 def sanitize(shortcode):

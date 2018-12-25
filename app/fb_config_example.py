@@ -1,8 +1,8 @@
 import fb_auth_token
 
-# Rename this file fb_config.py after filling out the following values
-fb_username = "your fb username here"
-fb_password = "your fb password here"
+# Copy this file to fb_config.py and fill out the following values
+fb_username = 'your fb username here'
+fb_password = 'your fb password here'
 
 fb_access_token = None
 fb_user_id = None
