@@ -43,7 +43,12 @@ if __name__ == '__main__':
     while True:
         # call update endpoint to load profiles into stack
         profiles = getRecs()
-        print('Got profiles')
+        if len(profiles) == 0:
+            print('No one in your area. Going to sleep for a bit.')
+            time.sleep(60*60)
+        else:
+            print('Got profiles')
+        
         # call knn on each profile
         for profile in profiles:
             print('Saving {} {}'.format(profile['name'], profile['_id']))

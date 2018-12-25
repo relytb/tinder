@@ -73,7 +73,10 @@ def _getMatchesFromRequest(uri, matches):
 def getRecs():
     request = _handleHttpError(lambda x: requests.get(TINDER_URL + RECS_URI, headers=x))
     json = request.json()
-    return [profile['user'] for profile in json['data']['results'] if profile['type'] == 'user']
+    if 'results' in json['data'].keys():
+        return [profile['user'] for profile in json['data']['results'] if profile['type'] == 'user']
+    else:
+        return []
 
 def spoofLocation(lat, lon):
     while True:
