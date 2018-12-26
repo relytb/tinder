@@ -12,15 +12,6 @@ def _get_profile(request):
     print('Got profile with keys {}'.format(profile.keys()))
     return profile
 
-def _init_folders():
-    nope_path = os.path.join(os.getcwd(), SAMPLE_NOPES_DIR)
-    like_path = os.path.join(os.getcwd(), SAMPLE_LIKES_DIR)
-    if not os.path.exists(nope_path):
-        os.makedirs(nope_path)
-        
-    if not os.path.exists(like_path):
-        os.makedirs(like_path)
-
 def _save_like(profile):
     print('Saving like for {} ...'.format(profile['name']))
     _save_profile(profile, SAMPLE_LIKES_DIR, os.getcwd())
@@ -35,11 +26,13 @@ def save_profile(profile):
         write_call = lambda : _save_like(profile)
     else:
         write_call = lambda : _save_nope(profile)
-    
     threading.Thread(target=write_call).start()
 
 def _save_profile(profile, swipe_dirname, baseDir):
     profile_folder_path = os.path.join(baseDir, swipe_dirname)
+    if not os.path.exists(profile_folder_path):
+        os.makedirs(profile_folder_path)
+
     json_path = os.path.join(profile_folder_path, '{}_profile.json'.format(profile['_id']))
     with open(json_path, 'w') as profile_file:
         profile_file.write(json.dumps(profile))

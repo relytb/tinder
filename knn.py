@@ -60,8 +60,8 @@ if __name__ == '__main__':
     nopes_keys = list(nopes.keys())
     shuffle(nopes_keys)
     divider = int((len(nopes_keys)/10)*8)
-    nopes_training_keys = nopes_keys[:len(likes_training_keys)]
-    nopes_test_keys = nopes_keys[len(likes_training_keys):len(likes_training_keys) + len(likes_test_keys)]
+    nopes_training_keys = nopes_keys[:divider]
+    nopes_test_keys = nopes_keys[divider:]
 
     print('{} in likes train set, {} in likes test set, {} in nopes train set, {} in nopes test set'.format(
         len(likes_training_keys), len(likes_test_keys), len(nopes_training_keys), len(nopes_test_keys)))
