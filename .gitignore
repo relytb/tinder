@@ -1,6 +1,4 @@
-app/__pycache__/*
-db.sqlite3
-tinder/__pycache__/*
+__pycache__/*
 like/*
 nope/*
 burned/*
@@ -10,6 +8,6 @@ like_swipe/*
 tmp/*
 .vscode/
 fb_config.py
-app/auth_token
 *.pyc
 insta_likes
+auth_token

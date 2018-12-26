@@ -21,12 +21,12 @@ def knn(k, descriptor, likes, nopes):
     like_count = 0
     i = 0
     for descriptor_path in list(distances.keys())[:k]:
-        swipe = 'nope'
+        swipe = SAMPLE_NOPES_DIR
         if descriptor_path in likes.keys():
-            swipe = 'like'
+            swipe = SAMPLE_LIKES_DIR
             like_count += 1
         print('{}th descriptor: {} is a {} with distance {}'.format(i, descriptor_path, swipe, distances[descriptor_path]))
-        print('Check it out here: {}'.format(os.path.abspath(os.path.join('../{}'.format(swipe), '_'.join(descriptor_path.split('_')[:-1]) + '.jpg'))))
+        print('Check it out here: {}'.format(os.path.abspath(os.path.join(swipe, '_'.join(descriptor_path.split('_')[:-1]) + '.jpg'))))
         i += 1
     print('{} likes out of {}'.format(like_count, k))
     return round(like_count/k)   

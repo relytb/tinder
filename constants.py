@@ -11,9 +11,9 @@ K = 5
 TEMP_DIR = 'tmp'
 SAVED_LIKES_DIR = 'like_swipe'
 SAVED_NOPES_DIR = 'nope_swipe'
-SAMPLE_LIKES_DIR = '../like'
-SAMPLE_NOPES_DIR = '../nope'
-BURNED_DIR = '../burned'
+SAMPLE_LIKES_DIR = 'like'
+SAMPLE_NOPES_DIR = 'nope'
+BURNED_DIR = 'burned'
 
 # Set this to true to save swipes for triaging (doesn't actually swipe)
 DEBUG_MODE = False

@@ -50,11 +50,11 @@ if __name__ == '__main__':
         # call knn on each profile
         for profile in profiles:
             print('Saving {} {}'.format(profile['name'], profile['_id']))
-            tmp_path = os.path.join(os.getcwd(), os.pardir, TEMP_DIR)
+            tmp_path = os.path.join(os.getcwd(), TEMP_DIR)
             if os.path.exists(tmp_path):
                 shutil.rmtree(tmp_path)
             os.mkdir(tmp_path)
-            _save_profile(profile, TEMP_DIR, os.path.join(os.getcwd(), os.pardir))
+            _save_profile(profile, TEMP_DIR, os.getcwd())
             run(tmp_path, pool)
             profile_descriptors = load(tmp_path)
             swipes = []
@@ -70,9 +70,9 @@ if __name__ == '__main__':
                 nope_count += 1
                 if DEBUG_MODE:
                     print('Saving nope {} ...'.format(profile['name']))
-                    for f in os.listdir(os.path.join(os.getcwd(), os.pardir, TEMP_DIR)):
-                        if not os.path.exists( os.path.join(os.getcwd(), os.pardir, SAVED_NOPES_DIR, f)):
-                            shutil.move(os.path.join(os.getcwd(), os.pardir, TEMP_DIR, f), os.path.join(os.getcwd(), os.pardir, SAVED_NOPES_DIR))
+                    for f in os.listdir(os.path.join(os.getcwd(), TEMP_DIR)):
+                        if not os.path.exists( os.path.join(os.getcwd(), SAVED_NOPES_DIR, f)):
+                            shutil.move(os.path.join(os.getcwd(), TEMP_DIR, f), os.path.join(os.getcwd(), SAVED_NOPES_DIR))
                 else:
                     nope(profile)
                 
@@ -80,9 +80,9 @@ if __name__ == '__main__':
                 like_count += 1
                 if DEBUG_MODE:
                     print('Saving like for {} ...'.format(profile['name']))
-                    for f in os.listdir(os.path.join(os.getcwd(), os.pardir, TEMP_DIR)):
-                        if not os.path.exists( os.path.join(os.getcwd(), os.pardir, SAVED_LIKES_DIR, f)):
-                            shutil.move(os.path.join(os.getcwd(), os.pardir, TEMP_DIR, f), os.path.join(os.getcwd(), os.pardir, SAVED_LIKES_DIR))
+                    for f in os.listdir(os.path.join(os.getcwd(), TEMP_DIR)):
+                        if not os.path.exists( os.path.join(os.getcwd(), SAVED_LIKES_DIR, f)):
+                            shutil.move(os.path.join(os.getcwd(), TEMP_DIR, f), os.path.join(os.getcwd(), SAVED_LIKES_DIR))
                 else:
                     like(profile)
             shutil.rmtree(tmp_path)

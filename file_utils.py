@@ -3,10 +3,7 @@ import os
 import base64
 import urllib.request
 import threading
-
-LIKE_DIR = 'like'
-NOPE_DIR = 'nope'
-BASE_DIR = 'C:\\Users\\Tyler\\tinder'
+from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR
 
 def _get_profile(request):
     profile = json.loads(request.body.decode('utf-8'))
@@ -14,8 +11,8 @@ def _get_profile(request):
     return profile
 
 def _init_folders():
-    nope_path = os.path.join(BASE_DIR, NOPE_DIR)
-    like_path = os.path.join(BASE_DIR, LIKE_DIR)
+    nope_path = os.path.join(os.getcwd(), SAMPLE_NOPES_DIR)
+    like_path = os.path.join(os.getcwd(), SAMPLE_LIKES_DIR)
     if not os.path.exists(nope_path):
         os.makedirs(nope_path)
         
@@ -24,11 +21,11 @@ def _init_folders():
 
 def _save_like(profile):
     print('Saving like for {} ...'.format(profile['name']))
-    _save_profile(profile, LIKE_DIR, BASE_DIR)
+    _save_profile(profile, SAMPLE_LIKES_DIR, os.getcwd())
 
 def _save_nope(profile):
     print('Saving nope {} ...'.format(profile['name']))
-    _save_profile(profile, NOPE_DIR, BASE_DIR)
+    _save_profile(profile, SAMPLE_NOPES_DIR, os.getcwd())
 
 def save_profile(profile):
     write_call = None
