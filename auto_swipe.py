@@ -1,16 +1,20 @@
 import os
-import sys
-import requests
-from knn import knn, load
-from random import shuffle
-import time
-import threading
-from multiprocessing import Pool
 import shutil
+import sys
+import threading
+import time
+from multiprocessing import Pool
+from random import shuffle
+
+import requests
+
+from api import getRecs, like, nope, spoofLocation
+from constants import (DEBUG_MODE, NUM_CORES, SAMPLE_LIKES_DIR,
+                       SAMPLE_NOPES_DIR, SAVED_LIKES_DIR, SAVED_NOPES_DIR,
+                       TEMP_DIR, K)
 from file_utils import _save_profile
 from image_utils import run
-from api import getRecs, nope, like, spoofLocation
-from constants import NUM_CORES, K, TEMP_DIR, DEBUG_MODE, SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR, SAVED_LIKES_DIR, SAVED_NOPES_DIR
+from knn import knn, load
 
 LIKES = {}
 NOPES = {}

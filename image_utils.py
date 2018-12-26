@@ -1,9 +1,10 @@
-import sys
-import dlib
 import os
-import cv2
 import pickle
+import sys
 from multiprocessing import Pool
+
+import cv2
+import dlib
 from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR
 
 detector = dlib.get_frontal_face_detector()

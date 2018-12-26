@@ -1,9 +1,11 @@
+import base64
 import json
 import os
-import base64
-import urllib.request
 import threading
+import urllib.request
+
 from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR
+
 
 def _get_profile(request):
     profile = json.loads(request.body.decode('utf-8'))

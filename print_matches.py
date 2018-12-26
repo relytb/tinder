@@ -1,8 +1,9 @@
-from api import getMatches
-import sys
 import os
+import sys
 from datetime import datetime
-from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR, BURNED_DIR
+
+from api import getMatches
+from constants import BURNED_DIR, SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR
 
 if __name__ == '__main__':
     matches = getMatches()

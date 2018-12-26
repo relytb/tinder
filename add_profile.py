@@ -1,11 +1,9 @@
-import sys
 import os
+import sys
+
 from api import getMatches
-from file_utils import save_profile
-from image_utils import run
 from constants import BURNED_DIR
-from threading import Thread
-import subprocess
+from file_utils import save_profile
 
 if __name__ == '__main__':
     pic_id = sys.argv[2]

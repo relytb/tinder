@@ -1,7 +1,8 @@
-from api import getMatches
-import sys
 import os
+import sys
 from datetime import datetime
+
+from api import getMatches
 
 if __name__ == '__main__':
     identifer = sys.argv[2]

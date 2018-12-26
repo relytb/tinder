@@ -1,8 +1,10 @@
-import requests
-import time
-import fb_config
 import json
 import os
+import time
+
+import requests
+
+import fb_config
 
 INSTA_URL = 'https://www.instagram.com/p/'
 TINDER_URL = 'https://api.gotinder.com'

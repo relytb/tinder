@@ -1,8 +1,9 @@
-import pickle
-import os
 import math
-from random import shuffle
+import os
+import pickle
 from collections import OrderedDict
+from random import shuffle
+
 from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR
 
 

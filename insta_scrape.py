@@ -1,10 +1,11 @@
-import sys
-import os
 import json
-from file_utils import save_profile
-from image_utils import extract_id
+import os
+import sys
+
 from api import getInstaPost
 from constants import SAMPLE_LIKES_DIR
+from file_utils import save_profile
+from image_utils import extract_id
 
 
 def downloadProfile(shortcode):
