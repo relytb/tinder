@@ -11,6 +11,7 @@ You'll need a Python 3 environment with the following installed:
 ```
 cv2
 dlib
+lxml
 requests
 robobrowser
 ```
