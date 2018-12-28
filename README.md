@@ -18,17 +18,19 @@ robobrowser
 
 ### Collecting Data
 
-Once you've cloned the github repo you'll need some data. I recommend first getting some likes by scraping insta posts of people you find attractive. You should look for posts with only one face in them. Insta post URLs are in this format:
+Once you've cloned the github repo you'll need some data. I recommend getting some by scraping insta posts of people you find attractive or unattractive. You should look for posts with only one face in them. Insta post URLs are in this format:
 
 ```
 https://www.instagram.com/p/{post_id}/
 ```
 
-Put the `post_id` of posts you like in a file at the repository root called `insta_likes` and run:
+Put the `post_id` of posts you like in a file `<likes filename>` and put the `post_id` of posts you dislike in `<nopes filename>`. Then run:
 ```
-python insta_scrape.py
+$ python insta_scrape.py <likes filename> 1
+$ python insta_scrape.py <nopes filename> 0
 ```
-This will create a folder called `like` full of profiles of people you find attractive. Run
+This will populate the `like` and `nope` folders with profiles of people you find attractive/unattractive respectively. Run
+
 ```
 python image_utils.py
 ```

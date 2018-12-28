@@ -26,7 +26,7 @@ def _convertInstaPostToProfile(insta_post):
     profile = {}
     profile['_id'] = sanitize(getShortcode(insta_post))
     profile['name'] = getName(insta_post)
-    profile['like'] = 1
+    profile['like'] = int(sys.argv[2])
     
     photos = []
     pic_urls = getPicUrls(insta_post)
@@ -59,7 +59,7 @@ def getShortcode(insta_post):
 
 
 if __name__ == '__main__':
-    shortcodes_path = os.path.join(os.getcwd(), 'insta_likes')
+    shortcodes_path = os.path.join(os.getcwd(), sys.argv[1])
     seen = getSeen()
     if os.path.exists(shortcodes_path):
         shortcodes_file = open(shortcodes_path)
