@@ -59,7 +59,7 @@ def getShortcode(insta_post):
 
 
 if __name__ == '__main__':
-    shortcodes_path = os.path.join(os.getcwd(), '../insta_likes')
+    shortcodes_path = os.path.join(os.getcwd(), 'insta_likes')
     seen = getSeen()
     if os.path.exists(shortcodes_path):
         shortcodes_file = open(shortcodes_path)
