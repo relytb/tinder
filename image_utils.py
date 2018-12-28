@@ -57,22 +57,21 @@ def extract_n(image_path):
     return image_path.split('_')[1].split('.')[0]
 
 def run(img_dir, pool):
-    if os.path.exists(img_dir):
-        entries = set(os.listdir(img_dir))
-        to_process = []
-        cur = 1
-        for entry in entries:
-            if '.jpg' in entry:
-                pic_id = extract_id(entry)
-                n = extract_n(entry)
-                if '{}_{}_done'.format(pic_id, n) not in entries:
-                    to_process.append([os.path.join(os.path.abspath(img_dir), entry), pic_id, n, cur, 0])
-                    cur += 1
+    entries = set(os.listdir(img_dir))
+    to_process = []
+    cur = 1
+    for entry in entries:
+        if '.jpg' in entry:
+            pic_id = extract_id(entry)
+            n = extract_n(entry)
+            if '{}_{}_done'.format(pic_id, n) not in entries:
+                to_process.append([os.path.join(os.path.abspath(img_dir), entry), pic_id, n, cur, 0])
+                cur += 1
 
-        total = len(to_process)
-        for arg in to_process:
-            arg[-1] = total
-        pool.map(pre_process_image, to_process)
+    total = len(to_process)
+    for arg in to_process:
+        arg[-1] = total
+    pool.map(pre_process_image, to_process)
 
 
 if __name__ == '__main__':

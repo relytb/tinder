@@ -30,8 +30,6 @@ def save_profile(profile):
 
 def _save_profile(profile, swipe_dirname, baseDir):
     profile_folder_path = os.path.join(baseDir, swipe_dirname)
-    if not os.path.exists(profile_folder_path):
-        os.makedirs(profile_folder_path)
 
     json_path = os.path.join(profile_folder_path, '{}_profile.json'.format(profile['_id']))
     with open(json_path, 'w') as profile_file:

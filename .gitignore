@@ -1,10 +1,14 @@
 __pycache__/*
 like/*
+!like/.keepme
 nope/*
+!nope/.keepme
 burned/*
-extracted
+!burned/.keepme
 nope_swipe/*
+!nope_swipe/.keepme
 like_swipe/*
+!like_swipe/.keepme
 tmp/*
 .vscode/
 fb_config.py

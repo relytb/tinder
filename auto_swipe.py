@@ -75,7 +75,7 @@ if __name__ == '__main__':
                 if DEBUG_MODE:
                     print('Saving nope {} ...'.format(profile['name']))
                     for f in os.listdir(os.path.join(os.getcwd(), TEMP_DIR)):
-                        if not os.path.exists( os.path.join(os.getcwd(), SAVED_NOPES_DIR, f)):
+                        if not os.path.exists(os.path.join(os.getcwd(), SAVED_NOPES_DIR, f)):
                             shutil.move(os.path.join(os.getcwd(), TEMP_DIR, f), os.path.join(os.getcwd(), SAVED_NOPES_DIR))
                 else:
                     nope(profile)
