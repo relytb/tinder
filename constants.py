@@ -7,7 +7,7 @@ NUM_CORES = 4
 # expense of longer processing times.
 K = 5
 
-# When you set it to 100 it gets 99.13% accuracy and executes the face 
+# When you set it to 100 it gets 99.38% accuracy and executes the face 
 # descriptor extraction 100 times on slightly modified versions of
 # the face and returns the average result. This makes the call 100x slower.
 # You could also pick a more middle value, such as 10, which is only 10x 
