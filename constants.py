@@ -13,8 +13,7 @@ K = 5
 # You could also pick a more middle value, such as 10, which is only 10x 
 # slower but still gets an LFW accuracy of 99.3%. A value of 1 gets 99.13% 
 # accuracy on LFW. http://dlib.net/face_recognition.py.html
-
-DESCRIPTOR_ACCURACY = 100
+DESCRIPTOR_ACCURACY = 1
 
 # Directory constants
 TEMP_DIR = 'tmp'

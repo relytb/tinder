@@ -13,5 +13,5 @@ tmp/*
 .vscode/
 fb_config.py
 *.pyc
-insta_likes
+insta_likes*
 auth_token

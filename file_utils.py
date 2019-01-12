@@ -28,6 +28,22 @@ def save_profile(profile):
         write_call = lambda : _save_nope(profile)
     threading.Thread(target=write_call).start()
 
+def saveProfileWithProcessPool(profile, swipe_dirname, baseDir, pool):
+    profile_folder_path = os.path.join(baseDir, swipe_dirname)
+
+    json_path = os.path.join(profile_folder_path, '{}_profile.json'.format(profile['_id']))
+    with open(json_path, 'w') as profile_file:
+        profile_file.write(json.dumps(profile))
+
+    pic_num = 0
+    to_process = []
+    for img_dict in profile['photos']:
+        img_url = img_dict['url']
+        img_path = os.path.join(profile_folder_path, '{}_{}.jpg'.format(profile['_id'], pic_num))
+        to_process.append((img_url, img_path))
+        pic_num += 1
+    pool.map(downloadPic, to_process)
+
 def _save_profile(profile, swipe_dirname, baseDir):
     profile_folder_path = os.path.join(baseDir, swipe_dirname)
 
@@ -38,10 +54,14 @@ def _save_profile(profile, swipe_dirname, baseDir):
     pic_num = 0
     for img_dict in profile['photos']:
         img_url = img_dict['url']
-        print(img_url)
         img_path = os.path.join(profile_folder_path, '{}_{}.jpg'.format(profile['_id'], pic_num))
-        try:
-            urllib.request.urlretrieve(img_url, img_path)
-        except urllib.error.HTTPError as err:
-            print(err.code)
+        downloadPic((img_url, img_path))
         pic_num += 1
+
+def downloadPic(args):
+    img_url, img_path = args
+    print(img_url)
+    try:
+        urllib.request.urlretrieve(img_url, img_path)
+    except urllib.error.HTTPError as err:
+        print(err.code)

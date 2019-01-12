@@ -7,7 +7,7 @@ from random import shuffle
 from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR
 
 
-def knn(k, descriptor, likes, nopes):
+def knn(k, descriptor, likes, nopes, tag=''):
     distances = {}
     for descriptor_path in nopes.keys():
         distance = euclidean_distance(nopes[descriptor_path], descriptor)
@@ -26,11 +26,29 @@ def knn(k, descriptor, likes, nopes):
         if descriptor_path in likes.keys():
             swipe = SAMPLE_LIKES_DIR
             like_count += 1
-        print('{}th descriptor: {} is a {} with distance {}'.format(i, descriptor_path, swipe, distances[descriptor_path]))
-        print('Check it out here: {}'.format(os.path.abspath(os.path.join(swipe, '_'.join(descriptor_path.split('_')[:-1]) + '.jpg'))))
+        print('{}{}th descriptor: {} is a {} with distance {}'.format(tag, i, descriptor_path, swipe, distances[descriptor_path]))
+        print('{}Check it out here: {}'.format(tag, os.path.abspath(os.path.join(swipe, '_'.join(descriptor_path.split('_')[:-1]) + '.jpg'))))
         i += 1
-    print('{} likes out of {}'.format(like_count, k))
-    return round(like_count/k)   
+    print('{}{} likes out of {}'.format(tag, like_count, k))
+    return round(like_count/k)
+
+def knnWithProcessPool(args):
+    K, descriptors, descriptorKey, cur, total = args
+    tag = "[{} of {}] ".format(cur, total)
+    swipe = knn(K, descriptors[descriptorKey], knnWithProcessPool.likes, knnWithProcessPool.nopes, tag=tag)
+    print('{}Swiped {} on {}'.format(tag, 'left' if swipe == 0 else 'right', descriptorKey))
+    return swipe
+
+def runKnn(descriptors, K, pool):
+    cur = 1
+    to_process = []
+    for descriptorKey in descriptors.keys():
+        to_process.append([K, descriptors, descriptorKey, cur, 0])
+        cur += 1
+    total = len(to_process)
+    for arg in to_process:
+        arg[-1] = total
+    return pool.map(knnWithProcessPool, to_process)
 
 def euclidean_distance(descriptor1, descriptor2):
     sum = 0

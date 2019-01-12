@@ -12,9 +12,9 @@ from api import getRecs, like, nope, spoofLocation
 from constants import (DEBUG_MODE, NUM_CORES, SAMPLE_LIKES_DIR,
                        SAMPLE_NOPES_DIR, SAVED_LIKES_DIR, SAVED_NOPES_DIR,
                        TEMP_DIR, K)
-from file_utils import _save_profile
+from file_utils import saveProfileWithProcessPool
 from image_utils import run
-from knn import knn, load
+from knn import runKnn, knnWithProcessPool, load
 
 LIKES = {}
 NOPES = {}
@@ -34,9 +34,13 @@ def setupDicts():
         LIKES[k] = likes[k]
     print('{} likes'.format(len(LIKES)))
 
+def initialize(f):
+    f.likes = LIKES
+    f.nopes = NOPES
+
 if __name__ == '__main__':
     setupDicts()
-    pool = Pool(processes=NUM_CORES)
+    pool = Pool(processes=NUM_CORES, initializer=initialize, initargs=(knnWithProcessPool,))
     nope_count = 0
     like_count = 0
     if len(sys.argv) > 1:
@@ -47,7 +51,7 @@ if __name__ == '__main__':
         profiles = getRecs()
         if len(profiles) == 0:
             print('No one in your area. Going to sleep for a bit.')
-            time.sleep(60*60)
+            time.sleep(10*60)
         else:
             print('Got profiles')
         
@@ -58,16 +62,11 @@ if __name__ == '__main__':
             if os.path.exists(tmp_path):
                 shutil.rmtree(tmp_path)
             os.mkdir(tmp_path)
-            _save_profile(profile, TEMP_DIR, os.getcwd())
+            saveProfileWithProcessPool(profile, TEMP_DIR, os.getcwd(), pool)
             run(tmp_path, pool)
             profile_descriptors = load(tmp_path)
-            swipes = []
 
-            for profile_descriptor in profile_descriptors.keys():
-                swipe = knn(K, profile_descriptors[profile_descriptor], LIKES, NOPES)
-                swipes.append(swipe)
-                print('Swiped {} on {}'.format('left' if swipe == 0 else 'right', profile_descriptor))
-            
+            swipes = runKnn(profile_descriptors, K, pool)            
             profile['like'] = 1 if (len(swipes) > 0 and (sum(swipes)/len(swipes)) >= 0.5) or len(swipes) == 0 else 0
             
             if profile['like'] == 0:
