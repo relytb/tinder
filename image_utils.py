@@ -5,7 +5,7 @@ from multiprocessing import Pool
 
 import cv2
 import dlib
-from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR
+from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR, DESCRIPTOR_ACCURACY
 
 detector = dlib.get_frontal_face_detector()
 sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
@@ -30,7 +30,7 @@ def pre_process_image(args):
         face_chip = dlib.get_face_chip(cv2_image, shape)
 
         print(tag + '{} - Generating descriptor'.format(image_path))
-        face_descriptor = facerec.compute_face_descriptor(cv2_image, shape, 100)
+        face_descriptor = facerec.compute_face_descriptor(cv2_image, shape, DESCRIPTOR_ACCURACY)
 
         # write to file
         print(tag + '{} - Writing pic'.format(image_path))
