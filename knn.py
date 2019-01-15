@@ -6,6 +6,8 @@ from random import shuffle
 
 from constants import SAMPLE_LIKES_DIR, SAMPLE_NOPES_DIR
 
+LIKES = {}
+NOPES = {}
 
 def knn(k, descriptor, likes, nopes, tag=''):
     distances = {}
@@ -32,10 +34,24 @@ def knn(k, descriptor, likes, nopes, tag=''):
     print('{}{} likes out of {}'.format(tag, like_count, k))
     return round(like_count/k)
 
+def euclidean_distance(descriptor1, descriptor2):
+    sum = 0
+    for i in range(len(descriptor1)):
+        sum += (descriptor1[i] - descriptor2[i]) ** 2
+    return math.sqrt(sum)
+  
+def load(img_dir):
+    vectors = {}
+    entries = os.listdir(img_dir)
+    descriptor_paths = [entry for entry in entries if 'descriptor' in entry]
+    for descriptor_path in descriptor_paths:
+        vectors[descriptor_path] = pickle.load(open(os.path.join(img_dir, descriptor_path), 'rb'))
+    return vectors
+
 def knnWithProcessPool(args):
     K, descriptors, descriptorKey, cur, total = args
     tag = "[{} of {}] ".format(cur, total)
-    swipe = knn(K, descriptors[descriptorKey], knnWithProcessPool.likes, knnWithProcessPool.nopes, tag=tag)
+    swipe = knn(K, descriptors[descriptorKey], LIKES, NOPES, tag=tag)
     print('{}Swiped {} on {}'.format(tag, 'left' if swipe == 0 else 'right', descriptorKey))
     return swipe
 
@@ -50,19 +66,20 @@ def runKnn(descriptors, K, pool):
         arg[-1] = total
     return pool.map(knnWithProcessPool, to_process)
 
-def euclidean_distance(descriptor1, descriptor2):
-    sum = 0
-    for i in range(len(descriptor1)):
-        sum += (descriptor1[i] - descriptor2[i]) ** 2
-    return math.sqrt(sum)
-  
-def load(img_dir):
-    vectors = {}
-    entries = os.listdir(img_dir)
-    descriptor_paths = [entry for entry in entries if 'descriptor' in entry]
-    for descriptor_path in descriptor_paths:
-        vectors[descriptor_path] = pickle.load(open(os.path.join(img_dir, descriptor_path), 'rb'))
-    return vectors
+def setupDicts():
+    nopes = load(SAMPLE_NOPES_DIR)
+    nopes_keys = list(nopes.keys())
+    shuffle(nopes_keys)
+    for k in nopes_keys:
+        NOPES[k] = nopes[k]
+    print('{} nopes'.format(len(NOPES)))
+
+    likes = load(SAMPLE_LIKES_DIR)
+    likes_keys = list(likes.keys())
+    shuffle(likes_keys)
+    for k in likes_keys:
+        LIKES[k] = likes[k]
+    print('{} likes'.format(len(LIKES)))
 
 if __name__ == '__main__':
     likes = load(SAMPLE_LIKES_DIR)
