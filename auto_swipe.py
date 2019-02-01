@@ -3,6 +3,8 @@ import shutil
 import sys
 import threading
 import time
+import tzlocal
+from datetime import datetime
 from multiprocessing import Pool
 from random import shuffle
 
@@ -66,6 +68,13 @@ if __name__ == '__main__':
                         if not os.path.exists( os.path.join(os.getcwd(), SAVED_LIKES_DIR, f)):
                             shutil.move(os.path.join(os.getcwd(), TEMP_DIR, f), os.path.join(os.getcwd(), SAVED_LIKES_DIR))
                 else:
-                    like(profile)
+                    wait = like(profile)
+                    while wait != None:
+                        local_timezone = tzlocal.get_localzone() # get pytz timezone
+                        local_time = datetime.fromtimestamp(wait, local_timezone)
+                        print('Out of likes, sleeping until {}'.format(local_time.strftime('%Y-%m-%d %H:%M:%S')))
+                        time.sleep((wait - time.time()))
+                        wait = like(profile)
+
             shutil.rmtree(tmp_path)
             print('Left: {}, Right: {} times'.format(nope_count, like_count))

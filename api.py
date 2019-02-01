@@ -1,7 +1,6 @@
 import json
 import os
 import time
-
 import requests
 
 import fb_config
@@ -92,7 +91,10 @@ def spoofLocation(lat, lon):
 
 def like(profile):
     print('Swiping right on {}'.format(profile['name']))
-    _handleHttpError(lambda x: requests.get(TINDER_URL + LIKE_URI.format(profile['_id']), headers=x))
+    response = _handleHttpError(lambda x: requests.get(TINDER_URL + LIKE_URI.format(profile['_id']), headers=x))
+    json = response.json()
+    if 'rate_limited_until' in json.keys():
+        return int(json['rate_limited_until']) / 1000
 
 def nope(profile):
     print('Swiping left on {}'.format(profile['name']))
