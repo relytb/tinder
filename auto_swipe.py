@@ -44,8 +44,9 @@ if __name__ == '__main__':
             run(tmp_path, pool)
             profile_descriptors = load(tmp_path)
 
-            swipes = runKnn(profile_descriptors, K, pool)       
-            profile['like'] = 1 if (len(swipes) > 0 and (sum(swipes)/len(swipes)) >= 0.5) or len(swipes) == 0 else 0
+            swipes = runKnn(profile_descriptors, K, pool)
+            print('Got swipes: {}, sum: {}'.format(swipes, sum(swipes)))      
+            profile['like'] = 1 if sum(swipes) >= 0.4*len(swipes) else 0
             
             if profile['like'] == 0:
                 nope_count += 1

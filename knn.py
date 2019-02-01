@@ -32,7 +32,7 @@ def knn(k, descriptor, likes, nopes, tag=''):
         print('{}Check it out here: {}'.format(tag, os.path.abspath(os.path.join(swipe, '_'.join(descriptor_path.split('_')[:-1]) + '.jpg'))))
         i += 1
     print('{}{} likes out of {}'.format(tag, like_count, k))
-    return round(like_count/k)
+    return like_count/k
 
 def euclidean_distance(descriptor1, descriptor2):
     sum = 0
