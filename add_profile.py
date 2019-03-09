@@ -10,7 +10,7 @@ if __name__ == '__main__':
     is_like = int(sys.argv[1])
     match = getMatches()[pic_id]
     if is_like > 1:
-        open(BURNED_DIR + match['_id'], 'a').close()
+        open(BURNED_DIR + os.sep + match['_id'], 'a').close()
     else:
         match['like'] = is_like
         save_profile(match)
