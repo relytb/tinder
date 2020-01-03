@@ -10,7 +10,7 @@ TINDER_URL = 'https://api.gotinder.com'
 RECS_URI = '/v2/recs/core'
 NOPE_URI = '/pass/{}'
 LIKE_URI = '/like/{}'
-AUTH_URI = '/auth'
+AUTH_URI = '/v2/auth/login/facebook'
 META_URI = '/meta'
 UNMESSAGED_MATCHES_URI = '/v2/matches?count=100&is_tinder_u=false&locale=en&message=0'
 MESSAGED_MATCHES_URI = '/v2/matches?count=100&is_tinder_u=false&locale=en&message=1'
@@ -50,8 +50,8 @@ def getAuthToken():
 
     print('No valid saved auth token, getting one manually')
     fb_config.init()
-    req = requests.post(TINDER_URL + AUTH_URI, json={'facebook_token': fb_config.fb_access_token, 'facebook_id': fb_config.fb_user_id})
-    tinder_auth_token = req.json()['token']
+    req = requests.post(TINDER_URL + AUTH_URI, json={'token': fb_config.fb_access_token})
+    tinder_auth_token = req.json()['data']['api_token']
     headers['X-Auth-Token'] = tinder_auth_token
     token_file = open(TOKEN_PATH, 'w')
     token_file.write(tinder_auth_token)
